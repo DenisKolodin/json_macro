@@ -1,0 +1,7 @@
+[package]
+name = "json_macro"
+version = "0.1.0"
+authors = ["Denis Kolodin <deniskolodin@gmail.com>"]
+
+[dependencies]
+rustc-serialize = "~0.3"
