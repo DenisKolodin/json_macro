@@ -20,6 +20,17 @@ macro_rules! json {
     }};
 }
 
+#[macro_export]
+macro_rules! json_object {
+    { $($key:expr => $val:tt),* } => {{
+    	use rustc_serialize::json::Object;
+        let mut object = Object::new();
+        $( object.insert($key.to_owned(), json!($val)); )*
+        object
+    }};
+}
+
+
 mod test {
 
 	#[test]
@@ -52,7 +63,13 @@ mod test {
 		object.insert("one".to_string(), Json::F64(3.1));
 		let mut inner = Object::new();
 		inner.insert("sub".to_string(), Json::String("string".to_string()));
-		object.insert("two".to_string(), Json::Object(inner));
+		object.insert("two".to_string(), Json::Object(inner));		
+		assert_eq!(object, json_object!{
+			"one" => 3.1f64,
+			"two" => (Json::Object(json_object!{
+				"sub" => "string"
+			}))
+		});
 		assert_eq!(Json::Object(object), json!({
 			"one" => 3.1f64,
 			"two" => (json!({
